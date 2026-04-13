@@ -1,0 +1,53 @@
+name: Antigravity CI/CD
+
+on:
+  workflow_dispatch:   # Permite dispararlo manualmente desde la pestaña Actions
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+
+  commit-generated:
+    runs-on: ubuntu-latest
+    needs: build-test   # Solo corre si la compilación y tests pasaron
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Crear archivo generado por IA
+        run: echo "<h1>ABM CLIENTE generado automáticamente</h1>" > CLIENTE.aspx
+
+      - name: Configurar Git
+        run: |
+          git config --global user.name "Antigravity Agent"
+          git config --global user.email "agent@example.com"
+
+      - name: Commit y push a rama feature/abm-cliente
+        run: |
+          git checkout -b feature/abm-cliente
+          git add CLIENTE.aspx
+          git commit -m "Agrego ABM CLIENTE generado por IA"
+          git push origin feature/abm-cliente
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
