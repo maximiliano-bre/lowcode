@@ -61,9 +61,12 @@ jobs:
           git config --global user.name "Antigravity Agent"
           git config --global user.email "agent@example.com"
 
-      - name: Commit y push a rama feature/generated
-        run: |
-          git checkout -b feature/generated
-          git add Generated.aspx Generated.cs
-          git commit -m "Código generado por IA a partir de prompt"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} feature/generated
+     - name: Commit y push a rama feature/generated
+      run: |
+        git fetch origin
+        git checkout feature/generated || git checkout -b feature/generated
+        git pull origin feature/generated || true
+        git add Generated.aspx Generated.cs
+        git commit -m "Código generado por IA a partir de prompt" || echo "No hay cambios para commitear"
+        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} feature/generated
+
