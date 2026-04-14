@@ -41,6 +41,21 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Configurar Git
+        run: |
+          git config --global user.name "Antigravity Agent"
+          git config --global user.email "agent@example.com"
+
+      - name: Preparar rama feature/generated
+        run: |
+          git fetch origin
+          if git show-ref --verify --quiet refs/remotes/origin/feature/generated; then
+            git checkout feature/generated
+            git merge origin/feature/generated --no-edit || true
+          else
+            git checkout -b feature/generated
+          fi
+
       - name: Generar código con IA
         run: |
           PROMPT=$(cat prompts/${{ github.event.inputs.prompt_file }})
@@ -56,20 +71,8 @@ jobs:
           echo "$RESPONSE" > Generated.aspx
           echo "$RESPONSE" > Generated.cs
 
-      - name: Configurar Git
+      - name: Commit y push
         run: |
-          git config --global user.name "Antigravity Agent"
-          git config --global user.email "agent@example.com"
-
-      - name: Commit y push a rama feature/generated
-        run: |
-          git fetch origin
-          if git show-ref --verify --quiet refs/remotes/origin/feature/generated; then
-            git checkout feature/generated
-            git merge origin/feature/generated --no-edit || true
-          else
-            git checkout -b feature/generated
-          fi
           git add Generated.aspx Generated.cs
           git commit -m "Código generado por IA a partir de prompt" || echo "No hay cambios para commitear"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} feature/generated
