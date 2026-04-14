@@ -60,14 +60,13 @@ jobs:
         run: |
           PROMPT=$(cat prompts/${{ github.event.inputs.prompt_file }})
           RESPONSE=$(curl -s https://api.openai.com/v1/completions \
-          -H "Content-Type: application/json" \
-          -H "Authorization: Bearer ${{ secrets.OPENIA }}" \
-          -d "{
-            \"model\": \"gpt-3.5-turbo-instruct\",
-            \"prompt\": \"$PROMPT\",
-            \"max_tokens\": 1500
-          }" | jq -r '.choices[0].text')
-
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.OPENIA }}" \
+            -d "{
+              \"model\": \"gpt-3.5-turbo-instruct\",
+              \"prompt\": \"$PROMPT\",
+              \"max_tokens\": 1500
+            }" | jq -r '.choices[0].text')
 
           echo "$RESPONSE" > Generated.aspx
           echo "$RESPONSE" > Generated.cs
