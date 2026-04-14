@@ -1,14 +1,19 @@
 name: Antigravity CI/CD
 
 on:
-  workflow_dispatch:   # Permite dispararlo manualmente desde la pestaña Actions
+  workflow_dispatch:
+    inputs:
+      prompt_file:
+        description: 'Archivo de prompt dentro de la carpeta prompts/'
+        required: true
+        default: 'abm-cliente.txt'
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
 permissions:
-  contents: write   # 🔑 habilita push con GITHUB_TOKEN
+  contents: write
 
 jobs:
   build-test:
@@ -29,29 +34,31 @@ jobs:
       - name: Build with MSBuild
         run: msbuild Antigravity.vbproj /p:Configuration=Release
 
-      # Si tuvieras tests unitarios en proyectos .NET Core, podrías agregarlos aquí.
-      # Para WebForms clásicos, normalmente no hay `dotnet test`.
-
   commit-generated:
     runs-on: ubuntu-latest
-    needs: build-test   # Solo corre si la compilación pasó
+    needs: build-test
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Crear archivo generado por IA
-        run: echo "<h1>ABM CLIENTE generado automáticamente</h1>" > CLIENTE.aspx
+      - name: Leer prompt
+        id: prompt
+        run: echo "PROMPT=$(cat prompts/${{ github.event.inputs.prompt_file }})" >> $GITHUB_ENV
+
+      - name: Generar código con IA
+        run: |
+          echo "<%@ Page Language='C#' MasterPageFile='~/Site.Master' %>" > Generated.aspx
+          echo "// Código generado automáticamente" > Generated.cs
+          echo "// Prompt usado: $PROMPT" >> Generated.cs
 
       - name: Configurar Git
         run: |
           git config --global user.name "Antigravity Agent"
           git config --global user.email "agent@example.com"
 
-      - name: Commit y push a rama feature/abm-cliente
+      - name: Commit y push a rama feature/generated
         run: |
-          git checkout -b feature/abm-cliente
-          git add CLIENTE.aspx
-          git commit -m "Agrego ABM CLIENTE generado por IA"
-          git push origin feature/abm-cliente
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git checkout -b feature/generated
+          git add Generated.aspx Generated.cs
+          git commit -m "Código generado por IA a partir de prompt"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} feature/generated
