@@ -56,7 +56,7 @@ jobs:
             git checkout -b feature/generated
           fi
 
-      - name: Generar código con IA
+       - name: Generar código con IA
         run: |
           PROMPT=$(cat prompts/${{ github.event.inputs.prompt_file }})
           RESPONSE=$(curl -s https://api.openai.com/v1/completions \
