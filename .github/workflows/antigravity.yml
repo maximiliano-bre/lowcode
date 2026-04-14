@@ -35,30 +35,39 @@ jobs:
         run: msbuild Antigravity.vbproj /p:Configuration=Release
 
   commit-generated:
-    runs-on: ubuntu-latest
-    needs: build-test
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+  runs-on: ubuntu-latest
+  needs: build-test
+  steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
 
-      - name: Leer prompt
-        id: prompt
-        run: echo "PROMPT=$(cat prompts/${{ github.event.inputs.prompt_file }})" >> $GITHUB_ENV
+    - name: Leer prompt
+      id: prompt
+      run: echo "PROMPT=$(cat prompts/${{ github.event.inputs.prompt_file }})" >> $GITHUB_ENV
 
-      - name: Generar código con IA
-        run: |
-          echo "<%@ Page Language='C#' MasterPageFile='~/Site.Master' %>" > Generated.aspx
-          echo "// Código generado automáticamente" > Generated.cs
-          echo "// Prompt usado: $PROMPT" >> Generated.cs
+   - name: Generar código con IA
+  run: |
+    PROMPT=$(cat prompts/${{ github.event.inputs.prompt_file }})
+    RESPONSE=$(curl -s https://api.openai.com/v1/completions \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
+      -d "{
+        \"model\": \"text-davinci-003\",
+        \"prompt\": \"$PROMPT\",
+        \"max_tokens\": 1500
+      }" | jq -r '.choices[0].text')
 
-      - name: Configurar Git
-        run: |
-          git config --global user.name "Antigravity Agent"
-          git config --global user.email "agent@example.com"
+    echo "$RESPONSE" > Generated.aspx
+    echo "$RESPONSE" > Generated.cs
 
-      - name: Commit y push a rama feature/generated
-        run: |
-          git checkout -b feature/generated
-          git add Generated.aspx Generated.cs
-          git commit -m "Código generado por IA a partir de prompt"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} feature/generated
+    - name: Configurar Git
+      run: |
+        git config --global user.name "Antigravity Agent"
+        git config --global user.email "agent@example.com"
+
+    - name: Commit y push a rama feature/generated
+      run: |
+        git checkout -b feature/generated
+        git add Generated.aspx Generated.cs
+        git commit -m "Código generado por IA a partir de prompt"
+        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} feature/generated
