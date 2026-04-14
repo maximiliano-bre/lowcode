@@ -64,8 +64,12 @@ jobs:
       - name: Commit y push a rama feature/generated
         run: |
           git fetch origin
-          git checkout feature/generated || git checkout -b feature/generated
-          git pull origin feature/generated || true
+          if git show-ref --verify --quiet refs/remotes/origin/feature/generated; then
+            git checkout feature/generated
+            git merge origin/feature/generated --no-edit || true
+          else
+            git checkout -b feature/generated
+          fi
           git add Generated.aspx Generated.cs
           git commit -m "Código generado por IA a partir de prompt" || echo "No hay cambios para commitear"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} feature/generated
