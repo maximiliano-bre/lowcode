@@ -56,17 +56,17 @@ jobs:
             git checkout -b feature/generated
           fi
 
-      - name: Generar código con IA
-        run: |
+      - name: Generar código con IA (Ollama Granite)
+         run: |
           PROMPT=$(cat prompts/${{ github.event.inputs.prompt_file }})
-          RESPONSE=$(curl -s https://api.openai.com/v1/completions \
+          RESPONSE=$(curl -s http://localhost:11434/api/generate \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.OPENIA }}" \
             -d "{
-              \"model\": \"gpt-3.5-turbo-instruct\",
+              \"model\": \"granite-code:latest\",
               \"prompt\": \"$PROMPT\",
-              \"max_tokens\": 1500
-            }" | jq -r '.choices[0].text')
+              \"max_tokens\": 1500,
+              \"stream\": false
+            }" | jq -r '.response')
 
           echo "$RESPONSE" > Generated.aspx
           echo "$RESPONSE" > Generated.cs
@@ -76,3 +76,4 @@ jobs:
           git add Generated.aspx Generated.cs
           git commit -m "Código generado por IA a partir de prompt" || echo "No hay cambios para commitear"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} feature/generated
+
