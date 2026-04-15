@@ -1,4 +1,5 @@
-Generar un programa en C# que imprima "Hola Mundo" en la consola.
-
-
-
+Generar un programa completo en C# para .NET Framework 4.7.2 que:
+- Tenga una clase Program con método Main.
+- Dentro de Main imprima en consola el texto "Hola Mundo desde Ollama".
+- Incluya los using necesarios (System).
+- El código debe estar listo para compilarse con csc.exe.
