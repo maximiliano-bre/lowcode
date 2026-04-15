@@ -56,6 +56,18 @@ jobs:
             git checkout -b feature/generated
           fi
 
+      - name: Debug Ollama response
+        run: |
+          PROMPT=$(jq -Rs . < prompts/${{ github.event.inputs.prompt_file }})
+          curl -s http://localhost:11434/api/generate \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"model\": \"granite-code:latest\",
+              \"prompt\": $PROMPT,
+              \"max_tokens\": 2000,
+              \"stream\": false
+            }" | tee response.json
+
       - name: Generar código con IA (Ollama Granite)
         run: |
           PROMPT=$(jq -Rs . < prompts/${{ github.event.inputs.prompt_file }})
@@ -73,6 +85,6 @@ jobs:
 
       - name: Commit y push
         run: |
-          git add Generated.aspx Generated.cs
+          git add Generated.aspx Generated.cs response.json
           git commit -m "Código generado por IA a partir de prompt ${{ github.event.inputs.prompt_file }}" || echo "No hay cambios para commitear"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} feature/generated
