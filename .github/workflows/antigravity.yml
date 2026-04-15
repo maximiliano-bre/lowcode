@@ -58,12 +58,12 @@ jobs:
 
       - name: Generar código con IA (Ollama Granite)
         run: |
-          PROMPT=$(cat prompts/${{ github.event.inputs.prompt_file }})
+          PROMPT=$(jq -Rs . < prompts/${{ github.event.inputs.prompt_file }})
           RESPONSE=$(curl -s http://localhost:11434/api/generate \
             -H "Content-Type: application/json" \
             -d "{
               \"model\": \"granite-code:latest\",
-              \"prompt\": \"$PROMPT\",
+              \"prompt\": $PROMPT,
               \"max_tokens\": 2000,
               \"stream\": false
             }" | jq -r '.response')
