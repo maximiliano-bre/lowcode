@@ -64,7 +64,7 @@ jobs:
             -d "{
               \"model\": \"granite-code:latest\",
               \"prompt\": \"$PROMPT\",
-              \"max_tokens\": 1500,
+              \"max_tokens\": 2000,
               \"stream\": false
             }" | jq -r '.response')
 
@@ -74,5 +74,5 @@ jobs:
       - name: Commit y push
         run: |
           git add Generated.aspx Generated.cs
-          git commit -m "Código generado por IA a partir de prompt" || echo "No hay cambios para commitear"
+          git commit -m "Código generado por IA a partir de prompt ${{ github.event.inputs.prompt_file }}" || echo "No hay cambios para commitear"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} feature/generated

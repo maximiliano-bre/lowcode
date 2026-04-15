@@ -1,19 +1,4 @@
-Generar un módulo ABM para la tabla Cliente en ASP.NET Framework 4.7.2.
+Generar un programa en C# que imprima "Hola Mundo" en la consola.
 
-Tabla Cliente:
-- ID int NOT NULL PRIMARY KEY
-- DNI int NULL
-- NOMBRE nvarchar NULL
-- APELLIDO nvarchar NULL
-- DIRECCION nvarchar NULL
-- LOCALIDAD nvarchar NULL
 
-Requisitos:
-- Crear una master page (Site.Master) que incluya Bootstrap y el framework Poncho UI para estilo moderno.
-- El formulario Cliente.aspx debe heredar de la master page.
-- Incluir controles TextBox para cada campo (DNI, Nombre, Apellido, Dirección, Localidad).
-- Incluir botones para Alta, Baja y Modificación (ABM).
-- Usar jQuery o JavaScript para validar campos y manejar eventos en el cliente.
-- Generar clase ORM Cliente.cs con propiedades correspondientes a cada columna.
-- Integrar el formulario con la clase ORM para operaciones CRUD básicas.
-- ConnectionString de ejemplo: Data Source=.;Initial Catalog=MiBase;Integrated Security=True
+
