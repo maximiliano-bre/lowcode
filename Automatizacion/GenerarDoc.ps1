@@ -23,24 +23,28 @@ El resultado debe ser un README.md con secciones claras.
 $promptContent
 "@
 
-# 5. Enviar a Ollama
+# 5. Escapar caracteres problemáticos
+$promptEscaped = $prompt.Replace("`r","").Replace("`n","\n").Replace('"','\"')
+
+# 6. Construir JSON
 $jsonBody = @"
 {
   "model": "granite-code:latest",
-  "prompt": "$prompt",
+  "prompt": "$promptEscaped",
   "stream": false
 }
 "@
 
+# 7. Llamar a Ollama
 $response = Invoke-RestMethod -Uri "http://localhost:11434/api/generate" `
     -Method Post -ContentType "application/json" -Body $jsonBody
 
-# 6. Guardar documentación en README.md
+# 8. Guardar documentación en README.md
 $docFile = Join-Path $repoPath "README.md"
 $response.response | Out-File -FilePath $docFile -Encoding utf8
 Write-Host "Documentación generada en $docFile"
 
-# 7. Subir al GitHub
+# 9. Subir al GitHub
 Set-Location $repoPath
 git add .
 git commit -m "Documentación generada automáticamente con Ollama Granite"
