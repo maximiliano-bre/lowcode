@@ -4,9 +4,12 @@ $repoPath = "C:\Bre\Programacion\MIS APP\antigravity"
 # 2. Archivos específicos a incluir
 $files = @(
     (Join-Path $repoPath "Login.aspx"),
-    (Join-Path $repoPath "Login.aspx.vb")
+    (Join-Path $repoPath "Login.aspx.vb"),
+    (Join-Path $repoPath "Facturas.aspx"),
+    (Join-Path $repoPath "Facturas.aspx.vb"),
+    (Join-Path $repoPath "Clientes.aspx"),
+    (Join-Path $repoPath "Clientes.aspx.vb")
 )
-
 # 3. Construir contenido para el prompt
 $promptContent = ""
 foreach ($file in $files) {
