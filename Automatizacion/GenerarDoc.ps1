@@ -1,16 +1,18 @@
 # 1. Ruta del repo local
 $repoPath = "C:\Bre\Programacion\MIS APP\antigravity"
 
-# 2. Extensiones a incluir
-$extensions = "*.aspx","*.cs","*.js","*.css","*.config"
+# 2. Archivos específicos a incluir (array de strings)
+$files = @(
+    (Join-Path $repoPath "Login.aspx"),
+    (Join-Path $repoPath "Login.aspx.vb")
+)
 
 # 3. Construir contenido para el prompt
 $promptContent = ""
-foreach ($ext in $extensions) {
-    $files = Get-ChildItem -Path $repoPath -Include $ext -Recurse
-    foreach ($file in $files) {
-        $content = Get-Content $file.FullName -Raw
-        $promptContent += "### " + $file.Name + "`n" + $content + "`n`n"
+foreach ($file in $files) {
+    if (Test-Path $file) {
+        $content = Get-Content $file -Raw
+        $promptContent += "### " + (Split-Path $file -Leaf) + "`n" + $content + "`n`n"
     }
 }
 
@@ -21,7 +23,7 @@ No generar código nuevo.
 Solo producir documentación en texto, explicando:
 - Qué hace cada archivo.
 - Cómo se relaciona con los demás.
-- El propósito general del sitio.
+- Su propósito general.
 El resultado debe ser un README.md con secciones claras.
 
 $promptContent
