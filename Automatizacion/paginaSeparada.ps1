@@ -1,5 +1,5 @@
 # 1. Leer prompt desde archivo
-$prompt = Get-Content ".\prompts\abm-cliente.txt" -Raw
+$prompt = Get-Content ".\prompts\web.txt" -Raw
 
 # 2. Escapar comillas y normalizar saltos de línea
 $promptEscaped = $prompt.Replace('"','\"').Replace("`r","").Replace("`n","\n")
