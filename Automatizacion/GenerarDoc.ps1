@@ -1,0 +1,47 @@
+# 1. Ruta del repo local
+$repoPath = "C:\Bre\Programacion\MIS APP\antigravity"
+
+# 2. Extensiones a incluir
+$extensions = "*.aspx","*.cs","*.js","*.css","*.config"
+
+# 3. Construir contenido para el prompt
+$promptContent = ""
+foreach ($ext in $extensions) {
+    $files = Get-ChildItem -Path $repoPath -Include $ext -Recurse
+    foreach ($file in $files) {
+        $content = Get-Content $file.FullName -Raw
+        $promptContent += "### " + $file.Name + "`n" + $content + "`n`n"
+    }
+}
+
+# 4. Prompt final para documentación
+$prompt = @"
+Analizar los siguientes archivos de un proyecto ASP.NET WebForms.
+Generar documentación explicando qué hace cada archivo, cómo se relaciona con los demás y el propósito general del sitio.
+El resultado debe ser un README.md con secciones claras.
+
+$promptContent
+"@
+
+# 5. Enviar a Ollama
+$jsonBody = @"
+{
+  "model": "granite-code:latest",
+  "prompt": "$prompt",
+  "stream": false
+}
+"@
+
+$response = Invoke-RestMethod -Uri "http://localhost:11434/api/generate" `
+    -Method Post -ContentType "application/json" -Body $jsonBody
+
+# 6. Guardar documentación en README.md
+$docFile = Join-Path $repoPath "README.md"
+$response.response | Out-File -FilePath $docFile -Encoding utf8
+Write-Host "Documentación generada en $docFile"
+
+# 7. Subir al GitHub
+Set-Location $repoPath
+git add .
+git commit -m "Documentación generada automáticamente con Ollama Granite"
+git push origin main
