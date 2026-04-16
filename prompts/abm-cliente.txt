@@ -1,5 +1,4 @@
-Generar un programa completo en C# para .NET Framework 4.7.2 que:
-- Tenga una clase Program con método Main.
-- Dentro de Main imprima en consola el texto "Hola Mundo desde Ollama".
-- Incluya los using necesarios (System).
-- El código debe estar listo para compilarse con csc.exe.
+Generar archivo index.html con una página web simple que muestre "Hola Mundo".
+Generar archivo style.css con estilos básicos para centrar el texto.
+Generar archivo script.js con un alert al cargar la página.
+Los 3 archivos tienen que tener relacion, el index es la pagina web, el css le da forma y colores (estilos) y el js la funcionalidad.

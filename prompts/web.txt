@@ -1,0 +1,5 @@
+Generar dos archivos:
+### Default.aspx
+Código ASPX con un formulario que tenga un TextBox, un Button y un Label.
+### Default.aspx.cs
+Código C# code-behind que capture el evento del Button y muestre el texto en el Label.
