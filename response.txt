@@ -1,24 +1,6 @@
-﻿Default.aspx
-<form id="form1" runat="server">
-    <div>
-        <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
-        <asp:Button ID="Button1" runat="server" Text="Click Me" onclick="Button1_Click" />
-        <asp:Label ID="Label1" runat="server"></asp:Label>
-    </div>
-</form>
+﻿Login.aspx:
+Archivo principal del proyecto ASP.NET que contiene la vista de inicio de sesión. Contiene un formulario HTML con un botón de ingreso y una división para mostrar los elementos de la página.
 
-
-Default.aspx.cs
-public partial class Default : System.Web.UI.Page
-{
-    protected void Page_Load(object sender, EventArgs e)
-    {
-
-    }
-
-    protected void Button1_Click(object sender, EventArgs e)
-    {
-        Label1.Text = TextBox1.Text;
-    }
-}
+Login.aspx.vb:
+Archivo de código que controla el flujo de trabajo de la aplicación. Define la clase Login que hereda de Page y contiene un método Page_Load que se ejecuta al cargar la página. Esto es donde se realiza el procesamiento de la solicitud de inicio de sesión.
 

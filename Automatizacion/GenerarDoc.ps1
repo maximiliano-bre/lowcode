@@ -1,7 +1,7 @@
 # 1. Ruta del repo local
 $repoPath = "C:\Bre\Programacion\MIS APP\antigravity"
 
-# 2. Archivos específicos a incluir (array de strings)
+# 2. Archivos específicos a incluir
 $files = @(
     (Join-Path $repoPath "Login.aspx"),
     (Join-Path $repoPath "Login.aspx.vb")
@@ -16,7 +16,7 @@ foreach ($file in $files) {
     }
 }
 
-# 4. Prompt final para documentación
+# 4. Prompt claro y reducido
 $prompt = @"
 Analizar los siguientes archivos de un proyecto ASP.NET WebForms.
 No generar código nuevo.
@@ -24,7 +24,6 @@ Solo producir documentación en texto, explicando:
 - Qué hace cada archivo.
 - Cómo se relaciona con los demás.
 - Su propósito general.
-El resultado debe ser un README.md con secciones claras.
 
 $promptContent
 "@
@@ -43,12 +42,15 @@ $jsonBody = $body | ConvertTo-Json -Depth 3
 $response = Invoke-RestMethod -Uri "http://localhost:11434/api/generate" `
     -Method Post -ContentType "application/json" -Body $jsonBody
 
-# 8. Guardar documentación en README.md
+# 8. Guardar salida cruda para debug
+$response.response | Out-File -FilePath (Join-Path $repoPath "response.txt") -Encoding utf8
+
+# 9. Guardar documentación en README.md
 $docFile = Join-Path $repoPath "README.md"
 $response.response | Out-File -FilePath $docFile -Encoding utf8
 Write-Host "Documentación generada en $docFile"
 
-# 9. Subir al GitHub
+# 10. Subir al GitHub
 Set-Location $repoPath
 git add .
 git commit -m "Documentación generada automáticamente con Ollama Granite"
