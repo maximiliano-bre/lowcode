@@ -1,24 +1,17 @@
 # 1. Ruta del repo local
 $repoPath = "C:\Bre\Programacion\MIS APP\antigravity"
 
-# 2. Archivos específicos a incluir
-$files = @(
-    (Join-Path $repoPath "Login.aspx"),
-    (Join-Path $repoPath "Login.aspx.vb"),
-    (Join-Path $repoPath "Facturas.aspx"),
-    (Join-Path $repoPath "Facturas.aspx.vb"),
-    (Join-Path $repoPath "Clientes.aspx"),
-    (Join-Path $repoPath "Clientes.aspx.vb")
-)
+# 2. Buscar todos los archivos .aspx, .vb y Web.config en el repo
+$files = Get-ChildItem -Path $repoPath -Include *.aspx,*.vb,Web.config -Recurse
+
 # 3. Construir contenido para el prompt
 $promptContent = ""
 foreach ($file in $files) {
-    if (Test-Path $file) {
-        $content = Get-Content $file -Raw
-        $promptContent += "### " + (Split-Path $file -Leaf) + "`n" + $content + "`n`n"
-    }
+    $content = Get-Content $file.FullName -Raw
+    $promptContent += "### " + $file.Name + "`n" + $content + "`n`n"
 }
 
+# 4. Prompt claro y enfocado en propósito y tecnologías
 $prompt = @"
 Actuá como un analista técnico senior especializado en sistemas .NET (C#, VB.NET, ASP.NET WebForms/MVC) y bases de datos SQL Server.
 
