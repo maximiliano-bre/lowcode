@@ -23,17 +23,15 @@ El resultado debe ser un README.md con secciones claras.
 $promptContent
 "@
 
-# 5. Escapar caracteres problemáticos
-$promptEscaped = $prompt.Replace("`r","").Replace("`n","\n").Replace('"','\"')
-
-# 6. Construir JSON
-$jsonBody = @"
-{
-  "model": "granite-code:latest",
-  "prompt": "$promptEscaped",
-  "stream": false
+# 5. Construir objeto con parámetros
+$body = @{
+    model  = "granite-code:latest"
+    prompt = $prompt
+    stream = $false
 }
-"@
+
+# 6. Convertir a JSON seguro
+$jsonBody = $body | ConvertTo-Json -Depth 3
 
 # 7. Llamar a Ollama
 $response = Invoke-RestMethod -Uri "http://localhost:11434/api/generate" `
