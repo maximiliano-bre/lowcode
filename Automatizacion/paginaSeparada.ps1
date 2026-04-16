@@ -1,10 +1,10 @@
-# 1. Leer prompt desde archivo
+# Leer prompt
 $prompt = Get-Content ".\prompts\web.txt" -Raw
 
-# 2. Escapar comillas y normalizar saltos de línea
+# Normalizar y escapar
 $promptEscaped = $prompt.Replace('"','\"').Replace("`r","").Replace("`n","\n")
 
-# 3. Construir el JSON manualmente
+# Construir JSON
 $jsonBody = @"
 {
   "model": "granite-code:latest",
@@ -13,24 +13,51 @@ $jsonBody = @"
 }
 "@
 
-# 4. Llamar a Ollama
+# Llamar a Ollama
 $response = Invoke-RestMethod -Uri "http://localhost:11434/api/generate" -Method Post -ContentType "application/json" -Body $jsonBody
 
-# 5. Dividir la respuesta en bloques por delimitadores
-$blocks = $response.response -split "### "
+# Guardar respuesta completa para debug
+$response.response | Out-File -FilePath "response.txt" -Encoding utf8
 
+# Normalizar la respuesta (eliminar \r si quedara)
+$raw = $response.response -replace "`r",""
+
+# Split por delimitador "### " y filtrar bloques no vacíos
+$blocks = $raw -split "(?m)^###\s+" | Where-Object { $_.Trim().Length -gt 0 }
+
+# Expresión para extraer nombre de archivo en la primera línea y contenido en las siguientes
 foreach ($block in $blocks) {
-    if ($block -like "Default.aspx*") {
-        $content = $block -replace "Default.aspx",""
-        $content.Trim() | Out-File -FilePath "Default.aspx" -Encoding utf8
-    }
-    elseif ($block -like "Default.aspx.cs*") {
-        $content = $block -replace "Default.aspx.cs",""
-        $content.Trim() | Out-File -FilePath "Default.aspx.cs" -Encoding utf8
+    # Separar la primera línea (nombre) del resto (contenido)
+    $lines = $block -split "`n",2
+    if ($lines.Count -ge 2) {
+        $filenameLine = $lines[0].Trim()
+        $content = $lines[1].Trim("`n","`r"," ")
+        # Normalizar nombre de archivo (quitar caracteres inválidos)
+        $filename = $filenameLine -replace '[\\/:*?"<>|]','' 
+        if ($filename -ne "") {
+            # Si el nombre no tiene extensión y parece markup, podés añadir lógica; aquí se usa tal cual
+            $content | Out-File -FilePath $filename -Encoding utf8
+            Write-Host "Generado archivo:" $filename
+        }
+    } else {
+        # Si no tiene salto de línea, ignorar o guardar como fallback
+        $fallback = $block.Trim()
+        if ($fallback.Length -gt 0) {
+            $fallback | Out-File -FilePath "response_fallback.txt" -Encoding utf8
+            Write-Host "Bloque sin nombre guardado en response_fallback.txt"
+        }
     }
 }
 
-# 6. Subir al GitHub
+# Verificar si hay cambios para commitear
+# Actualizar índice y comprobar estado
 git add .
-git commit -m "Sitio generado automaticamente con Ollama Granite"
-git push origin main
+# Comprobar si hay algo para commitear
+$status = git status --porcelain
+if ($status.Trim().Length -gt 0) {
+    git commit -m "Sitio generado automaticamente con Ollama Granite"
+    git push origin main
+    Write-Host "Cambios commiteados y pusheados."
+} else {
+    Write-Host "No hay cambios para commitear."
+}
