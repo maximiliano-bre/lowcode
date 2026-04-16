@@ -17,7 +17,11 @@ foreach ($ext in $extensions) {
 # 4. Prompt final para documentación
 $prompt = @"
 Analizar los siguientes archivos de un proyecto ASP.NET WebForms.
-Generar documentación explicando qué hace cada archivo, cómo se relaciona con los demás y el propósito general del sitio.
+No generar código nuevo.
+Solo producir documentación en texto, explicando:
+- Qué hace cada archivo.
+- Cómo se relaciona con los demás.
+- El propósito general del sitio.
 El resultado debe ser un README.md con secciones claras.
 
 $promptContent
