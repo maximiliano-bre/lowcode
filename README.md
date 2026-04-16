@@ -1,6 +1,2 @@
-﻿Login.aspx:
-Archivo principal del proyecto ASP.NET que contiene la vista de inicio de sesión. Contiene un formulario HTML con un botón de ingreso y una división para mostrar los elementos de la página.
-
-Login.aspx.vb:
-Archivo de código que controla el flujo de trabajo de la aplicación. Define la clase Login que hereda de Page y contiene un método Page_Load que se ejecuta al cargar la página. Esto es donde se realiza el procesamiento de la solicitud de inicio de sesión.
+﻿Login.aspx es una página web que muestra un formulario de login, y Login.aspx.vb es el código que se ejecuta cuando se hace clic en el botón "Ingresar". La página web utiliza la tecnología ASP.NET para mostrar y procesar el formulario, mientras que el código de la aplicación se encuentra en el archivo Login.aspx.vb. El código es conocido como "backend" porque se ejecuta del lado del servidor.
 

@@ -16,14 +16,14 @@ foreach ($file in $files) {
     }
 }
 
-# 4. Prompt claro y reducido
 $prompt = @"
 Analizar los siguientes archivos de un proyecto ASP.NET WebForms.
 No generar código nuevo.
 Solo producir documentación en texto, explicando:
-- Qué hace cada archivo.
-- Cómo se relaciona con los demás.
-- Su propósito general.
+- Para qué se usa cada archivo dentro del sistema (ejemplo: login es para ingresar al sistema).
+- Qué tecnologías utiliza (ASP.NET, VB.NET, Bootstrap, jQuery, etc.).
+- Cómo se relaciona con los demás archivos del proyecto.
+No detallar el contenido del formulario ni línea por línea, solo interpretar su propósito y las tecnologías involucradas.
 
 $promptContent
 "@
