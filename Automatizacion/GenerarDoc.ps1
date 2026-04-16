@@ -17,13 +17,65 @@ foreach ($file in $files) {
 }
 
 $prompt = @"
-Analizar los siguientes archivos de un proyecto ASP.NET WebForms.
-No generar código nuevo.
-Solo producir documentación en texto, explicando:
-- Para qué se usa cada archivo dentro del sistema (ejemplo: login es para ingresar al sistema).
-- Qué tecnologías utiliza (ASP.NET, VB.NET, Bootstrap, jQuery, etc.).
-- Cómo se relaciona con los demás archivos del proyecto.
-No detallar el contenido del formulario ni línea por línea, solo interpretar su propósito y las tecnologías involucradas.
+Actuá como un analista técnico senior especializado en sistemas .NET (C#, VB.NET, ASP.NET WebForms/MVC) y bases de datos SQL Server.
+
+Voy a proporcionarte un proyecto de software (código fuente, estructura de carpetas, archivos .aspx, .cs/.vb, scripts SQL, etc.).
+
+Tu tarea es analizar completamente el proyecto y generar documentación técnica clara, profesional y concisa.
+
+IMPORTANTE:
+- No expliques el código línea por línea
+- No repitas código innecesariamente
+- Enfocate en explicar funcionamiento, estructura y lógica del sistema
+- Usá lenguaje técnico claro
+- Pensá que la documentación será utilizada por otro desarrollador
+
+Generá la documentación con la siguiente estructura EXACTA:
+
+1. Introducción
+- Describir qué hace el sistema
+- Objetivo principal
+- Alcance funcional
+
+2. Arquitectura
+- Describir la arquitectura general (capas)
+- Tecnologías utilizadas
+- Flujo entre frontend, backend y base de datos
+
+3. Estructura del proyecto
+- Explicar organización de carpetas
+- Describir archivos importantes
+- Identificar componentes clave
+
+4. Base de datos
+- Listar tablas principales con su propósito
+- Describir relaciones importantes
+- Explicar Stored Procedures relevantes
+
+5. Flujos del sistema
+- Describir los flujos principales paso a paso
+- Ejemplo: login, alta, modificación, consultas
+- Explicar interacción entre capas
+
+6. Configuración
+- Identificar variables importantes (connection string, app settings)
+- Dependencias externas
+- Requisitos del entorno
+
+7. Instalación
+- Pasos claros para ejecutar el sistema
+- Configuración necesaria
+- Requisitos previos
+
+ADICIONAL:
+- Si detectás malas prácticas, mencionarlas brevemente
+- Si faltan componentes, indicarlo
+- Si hay riesgos (seguridad, SQL Injection, etc.), advertirlo
+
+Formato de salida:
+- Claro y ordenado
+- Sin relleno innecesario
+- Listo para ser usado como documentación técnica real
 
 $promptContent
 "@
